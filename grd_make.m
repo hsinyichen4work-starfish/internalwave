@@ -8,6 +8,7 @@ mooring_path = '/home/mbui/ModelOutput/NCOM/NOPP_mooring/';
 file_save_path = '/home/hsinyi/matlab_file/grid_saving/';
 grid_path = "/home/hsinyi/roms_data/grid/";
 bath_path='/home/hsinyi/data_notm/'; 
+binary_setup = '/home/mbui/ModelOutput/NCOM/data/2022082200/'
 
 %% setting vars
 mid_iter = 2; 
@@ -18,10 +19,22 @@ dx_300 = 300; nx_300 = 2048; ny_300 = 2560; % 300 m
 smooth_var.rmax = 0.2; smooth_var.hmin = 2; smooth_var.offset = 2.2;
 
 %% bathymetry interpolation
-cd(bath_path)
-filelist = {'get_srtm15_NW.txt','get_srtm15_NE.txt', ...
-            'get_srtm15_SW.txt','get_srtm15_SE.txt'};
-[topo.lon, topo.lat, topo.Z] = read_srtm15_tiles(filelist);
+cd(binary_setup)
+% filelist = {'get_srtm15_NW.txt','get_srtm15_NE.txt', ...
+%             'get_srtm15_SW.txt','get_srtm15_SE.txt'};
+% [topo.lon, topo.lat, topo.Z] = read_srtm15_tiles(filelist);
+fil = dir('grdlon_sfc_000000_000000_2o1244x1334_2022082200_00000000_datafld')
+s = extract_ncom_name(fil.name);
+topo.lon = read_ncom_flatfile(binary_setup, s.fldname, s.igrd, s.jgrd, ...
+            s.nest, s.datestr_in, s.timetag, s.appd, s.nlev, s.isface);
+fil = dir('grdlat_sfc_000000_000000_2o1244x1334_2022082200_00000000_datafld')
+s = extract_ncom_name(fil.name);
+topo.lat = read_ncom_flatfile(binary_setup, s.fldname, s.igrd, s.jgrd, ...
+            s.nest, s.datestr_in, s.timetag, s.appd, s.nlev, s.isface);
+fil = dir('depthr_sfc_000000_000000_2o1244x1334_2022082200_00000000_datafld')
+s = extract_ncom_name(fil.name);
+topo.Z = read_ncom_flatfile(binary_setup, s.fldname, s.igrd, s.jgrd, ...
+            s.nest, s.datestr_in, s.timetag, s.appd, s.nlev, s.isface);
 
 %% 
 [mid,rot_ang] = NCOM_grid_plot(mid_iter,path_figure);

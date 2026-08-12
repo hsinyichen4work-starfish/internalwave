@@ -1,7 +1,7 @@
 clear; clc
 addpath(genpath('/home/hsinyi/Documents/CODE/matlab_funtion/'));
 
-fod = ["2022082300","2022082400"]; % ,"2022082200"
+fod = ["2022082200","2022082300","2022082400"]; % ,
 grid_reso = [300];
 
 for folder_num = 1 : length(fod)
