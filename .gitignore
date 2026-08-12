@@ -1,0 +1,23 @@
+# macOS junk files
+._*
+.DS_Store
+
+# MATLAB specific
+*.asv
+*.m~
+slprj/
+*.autosave
+
+# Large files / data (adjust to your needs)
+*.mat
+*.zip
+*.tar
+*.tar.gz
+*.h5
+*.nc
+*.mp4
+*.avi
+
+# Or ignore entire data folders
+#/data/
+#/large_files/
