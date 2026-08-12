@@ -5,6 +5,8 @@
 # MATLAB specific
 *.asv
 *.m~
+*.log
+
 slprj/
 *.autosave
 
