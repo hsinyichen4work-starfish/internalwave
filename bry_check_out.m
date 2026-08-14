@@ -17,8 +17,6 @@ thermal = cmocean('thermal');
 balance = cmocean('balance');
 speed = cmocean('speed');
 
-bry_test_read = read_nc_fun('roms_bry_300m_2022082200.nc')
-
 %%
 cd(boundary_path)
 bry_test_read = read_nc_fun([boundary_path ,bry_file]);
@@ -30,7 +28,6 @@ Np = size(bry_test_read.temp_south,2);
 scoord  = 'new2008'; 
 
 bry_time = bry_test_read.bry_time + datenum('1994-01-01');
-
 
 out_west = extract_section_data(grd_test_read.lon_rho,grd_test_read.lat_rho, ...
     'row', 1, 'h', grd_test_read.h, "ang", grd_test_read.angle);
@@ -111,19 +108,19 @@ title(ti,append("boundary temp (^\circ C), time : ",datestr(bry_time(t))))
 linkaxes(ax,'xy')
 saveas(gcf,"bry_temp_check.jpg")
 
-ylim([-100 0]);clim([28 32])
+ylim([-100 0]);clim(ax,[25 32])
 saveas(gcf,"bry_temp_check_zoomin.jpg")
 saveas(gcf,"bry_temp_check_zoomin.fig")
 
-cd(figure_path)
-figure; clf; hold on
-ti = tiledlayout(1,1); ti.Padding = "compact"; ti.TileSpacing = "tight";
-ax(1) = nexttile; hold on
-brymask = ~isnan(out_west.h);
-mypcolor(repmat(out_west.dist(brymask),1,Np),squeeze(z_west(:,:,brymask))', ...
-    bry_test_read.temp_west(brymask,:,t))
-title("west boundary"); colorbar;
-saveas(gcf,"bry_temp_westcheck_zoomin.jpg")
+% cd(figure_path)
+% figure; clf; hold on
+% ti = tiledlayout(1,1); ti.Padding = "compact"; ti.TileSpacing = "tight";
+% ax(1) = nexttile; hold on
+% brymask = ~isnan(out_west.h);
+% mypcolor(repmat(out_west.dist(brymask),1,Np),squeeze(z_west(:,:,brymask))', ...
+%     bry_test_read.temp_west(brymask,:,t))
+% title("west boundary"); colorbar;
+% saveas(gcf,"bry_temp_westcheck_zoomin.jpg")
 
 
 %% check salinity

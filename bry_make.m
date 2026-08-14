@@ -16,7 +16,7 @@ for folder_num = 1 : length(fod)
     boundaryfile_read = '/home/hsinyi/roms_data/bry/bry_read_nc/';
 
     % make data nc file that can be read in boundary file
-    remake = true;
+    remake = false;
     [par_grd,parinie,parinit,pariniu] = make_bry_need_nc(par_name,boundaryfile_read,remake);
 
     %% general parent/ child grid setting
