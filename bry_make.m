@@ -28,8 +28,8 @@ for folder_num = 1 : length(fod)
         
         chd_grd    = ['roms_grd_',num2str(grid_reso(grid_num)),'m.nc'];
         chd_thetas = 6;
-        chd_thetab = 3;
-        chd_hc     = 250;
+        chd_thetab = 0.75;
+        chd_hc     = 10;
         if grid_reso(grid_num) == 300
             chd_N      = 128; % 128 for 300m grid and 192 for 100m grid 
         elseif grid_reso(grid_num) == 100

@@ -62,6 +62,9 @@ function [parinit] = make_bry_need_temp(hgrd2, vgrd2, valid_lay, par_name, path_
         s = extract_ncom_name(parsed_t(j).name);
         field = read_ncom_flatfile(path_setup, s.fldname, s.igrd, s.jgrd, ...
             s.nest, s.datestr_in, s.timetag, s.appd, s.nlev, s.isface);
+        if ~isempty(lndsea)
+            field(mask3d == 0) = NaN;
+        end
         field = field - 273.15;   % Kelvin -> Celsius
         if ~isempty(lndsea)
             field(mask3d == 0) = NaN;

@@ -29,7 +29,7 @@ function grd_struct = bathy_interp(topo, grd_struct, path_figure)
  
     %% 4. Build scattered interpolant (triangulation-based, handles
     %%    arbitrary/rotated source point layout)
-    F = scatteredInterpolant(lon_src, lat_src, z_src, 'linear', 'none');
+    F = scatteredInterpolant(double(lon_src), double(lat_src),double(z_src), 'linear', 'none');
  
     %% 5. Query at your target grid points (any shape -- rotated, 2D, etc.)
     grd_struct.bath4 = F(grd_struct.lon4_deg, grd_struct.lat4_deg);

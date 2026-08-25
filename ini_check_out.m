@@ -181,7 +181,7 @@ xlim(max_min(grd_test_read.lon_rho))
 ylim(max_min(grd_test_read.lat_rho))
 saveas(gcf,"initial_test_3000_temp.jpg")
 
-% velocity data 
+%% velocity data 
 [grd_test_read.lon_u, grd_test_read.lat_u, grd_test_read.lon_v, grd_test_read.lat_v] = ...
         rho2uv_latlon(grd_test_read.lon_rho, grd_test_read.lat_rho)
 
@@ -208,17 +208,30 @@ mask3d_f  = flip(mask3d, 1);                    % mask3d built in surface-first 
 NCOM_VEL_MAG = abs(F_u_NCOM + 1i * F_v_NCOM);
 ROMS_VEL_MAG = abs(F_u_ini + 1i * F_v_ini);
 
+nn = 50;
+Lon_plot = NCOM_GRID.Longitude(1:nn:end,1:nn:end);
+Lat_plot = NCOM_GRID.Latitude(1:nn:end,1:nn:end);
+nn_roms = 163;
+Lon_plot_roms = grd_test_read.lon_rho(1:nn_roms:end,1:nn_roms:end);
+Lat_plot_roms = grd_test_read.lat_rho(1:nn_roms:end,1:nn_roms:end);
+s = 0.5;
+
+cd(figure_path)
 figure; clf; hold on
 colormap(speed)
 ti = tiledlayout(1,2); ti.Padding = "compact"; ti.TileSpacing = "tight";
 ax(1) = nexttile; hold on
 mypcolor(NCOM_GRID.Longitude,NCOM_GRID.Latitude,permute(NCOM_VEL_MAG(1,:,:),[3,2,1]))
+quiver(Lon_plot,Lat_plot,s*permute(F_u_NCOM(1,1:nn:end,1:nn:end),[3 2 1]), ...
+         s*permute(F_v_NCOM(1,1:nn:end,1:nn:end),[3 2 1]),0, "Color", "r");
 grid_boundary_plot(grd_test_read.lon_rho,grd_test_read.lat_rho,"k",2)
 colorbar; daspect([1 1 1])
 title("NCOM data")
 
 ax(2) = nexttile; hold on
 mypcolor(grd_test_read.lon_rho,grd_test_read.lat_rho,permute(ROMS_VEL_MAG(1,:,:),[2 3 1]))
+quiver(Lon_plot_roms,Lat_plot_roms,s*permute(F_u_ini(1,1:nn_roms:end,1:nn_roms:end),[2 3 1]), ...
+         s*permute(F_v_ini(1,1:nn_roms:end,1:nn_roms:end),[2 3 1]),0, "Color", "r");
 colorbar; daspect([1 1 1])
 title("ROMS inital nc file")
 title(ti,append("surf vel mag (m/s) for initial time : ",datestr(ini_time)))
@@ -228,17 +241,22 @@ xlim(max_min(grd_test_read.lon_rho))
 ylim(max_min(grd_test_read.lat_rho))
 saveas(gcf,"initial_test_surf_vel_mag.jpg")
 
+
 figure; clf; hold on
 colormap(speed)
 ti = tiledlayout(1,2); ti.Padding = "compact"; ti.TileSpacing = "tight";
 ax(1) = nexttile; hold on
 mypcolor(NCOM_GRID.Longitude,NCOM_GRID.Latitude,permute(NCOM_VEL_MAG(2,:,:),[3,2,1]))
+quiver(Lon_plot,Lat_plot,s*permute(F_u_NCOM(2,1:nn:end,1:nn:end),[3 2 1]), ...
+         s*permute(F_v_NCOM(2,1:nn:end,1:nn:end),[3 2 1]),0, "Color", "r");
 grid_boundary_plot(grd_test_read.lon_rho,grd_test_read.lat_rho,"k",2)
 colorbar; daspect([1 1 1])
 title("NCOM data")
 
 ax(2) = nexttile; hold on
 mypcolor(grd_test_read.lon_rho,grd_test_read.lat_rho,permute(ROMS_VEL_MAG(2,:,:),[2 3 1]))
+quiver(Lon_plot_roms,Lat_plot_roms,s*permute(F_u_ini(2,1:nn_roms:end,1:nn_roms:end),[2 3 1]), ...
+         s*permute(F_v_ini(2,1:nn_roms:end,1:nn_roms:end),[2 3 1]),0, "Color", "r");
 colorbar; daspect([1 1 1])
 title("ROMS inital nc file")
 title(ti,append("100m vel mag (m/s) for initial time : ",datestr(ini_time)))
@@ -253,12 +271,16 @@ colormap(speed)
 ti = tiledlayout(1,2); ti.Padding = "compact"; ti.TileSpacing = "tight";
 ax(1) = nexttile; hold on
 mypcolor(NCOM_GRID.Longitude,NCOM_GRID.Latitude,permute(NCOM_VEL_MAG(3,:,:),[3,2,1]))
+quiver(Lon_plot,Lat_plot,s*permute(F_u_NCOM(3,1:nn:end,1:nn:end),[3 2 1]), ...
+         s*permute(F_v_NCOM(3,1:nn:end,1:nn:end),[3 2 1]),0, "Color", "r");
 grid_boundary_plot(grd_test_read.lon_rho,grd_test_read.lat_rho,"k",2)
 colorbar; daspect([1 1 1])
 title("NCOM data")
 
 ax(2) = nexttile; hold on
 mypcolor(grd_test_read.lon_rho,grd_test_read.lat_rho,permute(ROMS_VEL_MAG(3,:,:),[2 3 1]))
+quiver(Lon_plot_roms,Lat_plot_roms,s*permute(F_u_ini(3,1:nn_roms:end,1:nn_roms:end),[2 3 1]), ...
+         s*permute(F_v_ini(3,1:nn_roms:end,1:nn_roms:end),[2 3 1]),0, "Color", "r");
 colorbar; daspect([1 1 1])
 title("ROMS inital nc file")
 title(ti,append("3000m vel mag (m/s) for initial time : ",datestr(ini_time)))

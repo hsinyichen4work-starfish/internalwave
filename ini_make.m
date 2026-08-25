@@ -48,8 +48,8 @@ pariniu = [par_name, '_uv.nc'];
 % chd_grd_name = ['roms_grd_', num2str(grid_reso(grid_num)), 'm.nc'];
 
 chd_thetas = 6;
-chd_thetab = 3;
-chd_hc     = 250;
+chd_thetab = 0.75;
+chd_hc     = 10;
 
 if grid_reso == 300
     chd_N = 128;   % 128 levels for 300 m grid
