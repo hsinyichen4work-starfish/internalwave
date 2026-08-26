@@ -8,7 +8,7 @@ mooring_path = '/home/mbui/ModelOutput/NCOM/NOPP_mooring/';
 file_save_path = '/home/hsinyi/matlab_file/grid_saving/';
 grid_path = "/home/hsinyi/roms_data/grid/";
 bath_path='/home/hsinyi/data_notm/'; 
-binary_setup = '/home/mbui/ModelOutput/NCOM/data/2022082200/'
+binary_setup = '/home/mbui/ModelOutput/NCOM/data/2022082200/';
 
 %% setting vars
 mid_iter = 2; 
@@ -27,7 +27,6 @@ lat_dum = gebco.Latitude >= -4 & gebco.Latitude <= 12;
 topo.Z = gebco.elevation(lon_dum,lat_dum)';
 
 %% parent grid bath
-pgrid = read_nc_fun([path_setup,'ohgrd_2.nc']);
 if mean(pgrid.h(pgrid.mask == 1),"omitmissing") < 0
     pgrid.h = -pgrid.h;
 end
@@ -43,7 +42,7 @@ disp(append("300m : actual_dx_APPROX = ",num2str(actual_dx_APPROX),...
 grd_300m_nc = make_roms_ncgrid(grd_300m,'roms_grd_300m',...
     mid,rot_ang,dx_300,nx_300,ny_300,smooth_var,grid_path);
 cd(path_figure)
-[grd_300m_nc, diag] = match_boundary_topo(pgrid, grd_300m_nc, [1 1 1 1], 4,5);
+[grd_300m_nc] = match_boundary_topo(pgrid, grd_300m_nc, [1 1 1 1], 4,5);
 saveas(gcf,"match_topo_check_300.fig")
 saveas(gcf,"match_topo_check_300.jpg")
 cd(grid_path)

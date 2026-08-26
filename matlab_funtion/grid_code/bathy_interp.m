@@ -1,4 +1,4 @@
-function grd_struct = bathy_interp(topo, grd_struct, path_figure)
+function grd_struct = bathy_interp(topo, grd_struct)
 
     %% 1. Flatten source into scattered points -- works regardless of
     %%    whether topo.lon/lat are regular, curvilinear, or rotated

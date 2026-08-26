@@ -11,7 +11,7 @@ function struct = lsmooth_fun(gridfile,rmax,hmin,offset)
   %  close(nc)
   
   %  hr = h;
-  %  rfact;
+  %  r = rfact(hr);
   %  2*max(max(r)) 
   %  return
   
@@ -26,7 +26,7 @@ function struct = lsmooth_fun(gridfile,rmax,hmin,offset)
   %    h(:,i) = min(hm,h(1,i));
   %  end
   %  hr = h;
-  %  rfact;
+  %  r = rfact(hr);
   %  2*max(max(r)) 
   
        if (rmax>0.D0)
@@ -48,7 +48,7 @@ function struct = lsmooth_fun(gridfile,rmax,hmin,offset)
        iter_max = 200;
        hr=h;
        h1 = h;
-       rfact
+       r = rfact(hr)
        r_or = r;
        for iter=1:iter_max
   
@@ -96,7 +96,7 @@ function struct = lsmooth_fun(gridfile,rmax,hmin,offset)
   %       h(613,269) = h(613,269);
   
          hr = h;
-         rfact;
+         r = rfact(hr);
           rt = [rt 2*max(max(r))];
          disp([' ' num2str(iter) '   '  num2str(rt(end))])
          if rt(end)<rmax

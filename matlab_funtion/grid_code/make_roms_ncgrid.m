@@ -1,4 +1,4 @@
-child function struct = make_roms_ncgrid(grd_struct,grd_name,mid,rot_ang,dx,nx,ny,smooth_var,grid_path)
+function struct = make_roms_ncgrid(grd_struct,grd_name,mid,rot_ang,dx,nx,ny,smooth_var,grid_path)
 
     size_x = nx*dx; 
     size_y = ny*dx; 

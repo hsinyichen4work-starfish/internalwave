@@ -28,7 +28,8 @@ function [cgrid, diag] = match_boundary_topo(pgrid, cgrid, obcflag, ndomx, ndomy
        [Mc, Lc] = size(cgrid.h);
 
        % match parent grid 
-       pgrid.lon(pgrid.lon < 0) = pgrid.lon(pgrid.lon < 0) + 360;
+       pgrid = standardize_name(pgrid);
+       pgrid.lon_rho(pgrid.lon_rho < 0) = pgrid.lon_rho(pgrid.lon_rho < 0) + 360;
     
        %% -------- set up chunk index bounds (same pattern as h2r_make_ini) --------
        szx = floor(Lc/ndomx);
@@ -72,8 +73,8 @@ function [cgrid, diag] = match_boundary_topo(pgrid, cgrid, obcflag, ndomx, ndomy
              lat0 = min(latc_chunk(:)) - 0.05;
              lat1 = max(latc_chunk(:)) + 0.05;
     
-             g = pgrid.lon >= lon0 & pgrid.lon <= lon1 & ...
-                 pgrid.lat >= lat0 & pgrid.lat <= lat1;
+             g = pgrid.lon_rho >= lon0 & pgrid.lon_rho <= lon1 & ...
+                 pgrid.lat_rho >= lat0 & pgrid.lat_rho <= lat1;
     
              jidx = find(any(g,2));
              iidx = find(any(g,1));
@@ -84,8 +85,8 @@ function [cgrid, diag] = match_boundary_topo(pgrid, cgrid, obcflag, ndomx, ndomy
              imin = min(iidx); imax = max(iidx);
     
              hp    = pgrid.h  (jmin:jmax, imin:imax);
-             lonp  = pgrid.lon(jmin:jmax, imin:imax);
-             latp  = pgrid.lat(jmin:jmax, imin:imax);
+             lonp  = pgrid.lon_rho(jmin:jmax, imin:imax);
+             latp  = pgrid.lat_rho(jmin:jmax, imin:imax);
              if isfield(pgrid,'mask')
                 maskp = pgrid.mask(jmin:jmax, imin:imax);
              else
