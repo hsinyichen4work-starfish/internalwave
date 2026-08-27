@@ -9,7 +9,7 @@ chd_thetas = 6; chd_thetab = 0.75; chd_hc = 10; chd_N = 128;
 chd_ang   = 'rad'; chdscoord = 'new2008';     % child 'new' or 'old' type scoord
 ndomx = 2; ndomy = 2; %-> chunking needed to avoid OOM.
 
-dating = datenum("20220822","yyyymmdd") : datenum("20220823","yyyymmdd");
+dating = datenum("20220824","yyyymmdd") : datenum("20221010","yyyymmdd");
 %% path settings
 parent_grid = '/home/mbui/ModelOutput/NCOM/grid/ohgrd_2.nc';
 parent_data_path = '/home/mbui/ModelOutput/NCOM/data/';
