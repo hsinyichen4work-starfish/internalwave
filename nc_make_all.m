@@ -35,6 +35,7 @@ if ~isfile([grid_path, grd_name,'.nc'])
     grd_build
 end
 child_grid  = read_nc_fun([grid_path, grd_name,'.nc']);
+[rx1_max, rx1_field, loc] = compute_rx1(child_grid.h, chd_thetas, chd_thetab, chd_hc, chd_N);
 %% initial build
 if ~isfile([initial_path, ini_name])
     ini_build
