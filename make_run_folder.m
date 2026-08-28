@@ -1,10 +1,10 @@
 clear; clc;
 addpath(genpath('/home/hchen54/internalwave/matlab_funtion'));
 
-title = "Amazon shelf internal wave simulation - 3 day test - node test 5"
-fold_name = 'nod4_cpn128_32x16';
+title = "Amazon shelf internal wave simulation - 3 day test - node test 6"
+fold_name = 'diarun';
 
-NP_XI=32; NP_ETA=16; node = 4; cpn = 128; do_dia = false;
+NP_XI=16; NP_ETA=32; node = 4; cpn = 128; do_dia = true;
 if ~(NP_XI*NP_ETA == node*cpn)
     error("tiled and node mismatch!!!")
 end

@@ -4,7 +4,7 @@
 #SBATCH --partition=shared
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=4
+#SBATCH --cpus-per-task=1
 #SBATCH --time=07:00:00
 #SBATCH --mem=64G
 #SBATCH --output=check_output_out.%j
@@ -21,4 +21,17 @@ module load matlab/2022b/lefe4oq
 # automatically exits MATLAB when done (also exits with MATLAB's error
 # code if something crashes, which shows up cleanly in your SLURM log).
 # Do NOT include the .m extension in the command below.
+t_start=$(date +%s)
+
 matlab -batch "check_output" -logfile checkoutput.log
+
+t_end=$(date +%s)
+elapsed=$((t_end - t_start))
+
+
+echo ""
+echo "===================================================="
+echo "TIMING SUMMARY"
+echo "  job          : check_output"
+echo "  wall-clock   : ${elapsed} sec"
+echo "===================================================="
