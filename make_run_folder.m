@@ -1,16 +1,16 @@
 clear; clc;
 addpath(genpath('/home/hchen54/internalwave/matlab_funtion'));
 
-title = "Amazon shelf internal wave simulation - 3 day test - node test 6"
-fold_name = 'diarun';
+title = "Amazon shelf internal wave simulation - 900m & 3month"
+fold_name = 'amazon_3mon900m';
 
-NP_XI=16; NP_ETA=32; node = 4; cpn = 128; do_dia = true;
+NP_XI=8; NP_ETA=8; node = 1; cpn = 64; do_dia = true;
 if ~(NP_XI*NP_ETA == node*cpn)
     error("tiled and node mismatch!!!")
 end
 
-time_stepping.NTIMES = 7200;
-time_stepping.dt = 5; time_stepping.NDTFAST = 10;
+time_stepping.NTIMES = 129600;
+time_stepping.dt = 60; time_stepping.NDTFAST = 10;
 time_stepping.rst = 86400;
 time_stepping.his = 3600;
 time_stepping.avg = 3600;
@@ -18,14 +18,14 @@ time_stepping.dia = time_stepping.his/time_stepping.dt;
 Scoord.THETA_S = 6;
 Scoord.THETA_B = 0.75;
 Scoord.hc = 10;
-grid.LLm=2048; grid.MMm=2560; grid.N=128; %% 300m grid
+grid.LLm=686; grid.MMm=856; grid.N=128; %% 900m grid
 
-walltime = '06:00:00';
-input_filenames.grd = 'roms_grd_300m';
-input_filenames.ini = 'roms_ini_300m';
-input_filenames.bry = 'roms_bry_300m';
-input_filenames.frc = 'roms_frc_300m';
-filename = 'amazon_3day.in';
+walltime = '24:00:00';
+input_filenames.grd = 'roms_grd_900m';
+input_filenames.ini = 'roms_ini_900m';
+input_filenames.bry = 'roms_bry_900m';
+input_filenames.frc = 'roms_frc_900m';
+filename = 'amazon_3mon.in';
 
 %%
 example_folder = '/home/hchen54/myrun/example/';
