@@ -20,6 +20,11 @@ slprj/
 *.mp4
 *.avi
 
+# Cluster/job output files (e.g. myjob.err.53992114, myjob.out.53992114)
+*err.[0-9]*
+*out.[0-9]*
+
+
 # Or ignore entire data folders
 #/data/
 #/large_files/

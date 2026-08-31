@@ -10,15 +10,15 @@ if ~(NP_XI*NP_ETA == node*cpn)
 end
 
 time_stepping.NTIMES = 129600;
-time_stepping.dt = 60; time_stepping.NDTFAST = 10;
+time_stepping.dt = 20; time_stepping.NDTFAST = 13;
 time_stepping.rst = 86400;
 time_stepping.his = 3600;
 time_stepping.avg = 3600;
-time_stepping.dia = time_stepping.his/time_stepping.dt;
+time_stepping.dia = time_stepping.his;
 Scoord.THETA_S = 6;
 Scoord.THETA_B = 0.75;
 Scoord.hc = 10;
-grid.LLm=686; grid.MMm=856; grid.N=128; %% 900m grid
+grid.LLm=684; grid.MMm=854; grid.N=128; %% 900m grid
 
 walltime = '24:00:00';
 input_filenames.grd = 'roms_grd_900m';
