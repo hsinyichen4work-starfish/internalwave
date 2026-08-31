@@ -24,7 +24,10 @@ slprj/
 *err.[0-9]*
 *out.[0-9]*
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 2a79d2fd83e054fd620bb4d6205e2253768707f4
 # Or ignore entire data folders
 #/data/
 #/large_files/
