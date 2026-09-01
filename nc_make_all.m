@@ -5,11 +5,11 @@ mid_iter = 2; dx = 900; nx = 684; ny = 854; % 900 m
 smooth_var.rmax = 0.2; smooth_var.hmin = 2; smooth_var.offset = 2.2;
 parent_datatype = "NCOM"; % "NCOM" OR "ROMS"
 
-chd_thetas = 6; chd_thetab = 0.75; chd_hc = 10; chd_N = 128;
+chd_thetas = 6; chd_thetab = 6; chd_hc = 250; chd_N = 128;
 chd_ang   = 'rad'; chdscoord = 'new2008';     % child 'new' or 'old' type scoord
 ndomx = 2; ndomy = 2; %-> chunking needed to avoid OOM.
 
-dating = datenum("20220825","yyyymmdd") : datenum("20221127","yyyymmdd");
+dating = datenum("20220822","yyyymmdd") : datenum("20220905","yyyymmdd");
 %% path settings
 parent_grid = '/home/mbui/ModelOutput/NCOM/grid/ohgrd_2.nc';
 parent_data_path = '/home/mbui/ModelOutput/NCOM/data/';
