@@ -21,7 +21,7 @@ grid_path = ['/expanse/lustre/projects/uso101/hchen54/input/grid_',fold_tile,'/'
 bry_path = ['/expanse/lustre/projects/uso101/hchen54/input/bry_',fold_tile,'/'];
 frc_path = ['/expanse/lustre/projects/uso101/hchen54/input/frc_',fold_tile,'/'];
 ini_path = ['/expanse/lustre/projects/uso101/hchen54/input/ini_',fold_tile,'/'];
-output_path = ['/expanse/lustre/projects/uso101/hchen54/',fold_name,'/',fold_name];
+output_path = ['/expanse/lustre/projects/uso101/hchen54/',fold_name,'/roms',];
 mkdir(['/expanse/lustre/projects/uso101/hchen54/',fold_name])
 
 cd '/expanse/lustre/projects/uso101/hchen54/input/'

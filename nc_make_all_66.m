@@ -5,7 +5,7 @@ mid_iter = 2; dx = 900; nx = 684; ny = 854; % 900 m
 smooth_var.rmax = 0.2; smooth_var.hmin = 2; smooth_var.offset = 2.2;
 parent_datatype = "NCOM"; % "NCOM" OR "ROMS"
 
-chd_thetas = 6; chd_thetab = 3; chd_hc = 250; chd_N = 128;
+chd_thetas = 6; chd_thetab = 6 ; chd_hc = 250; chd_N = 128;
 chd_ang   = 'rad'; chdscoord = 'new2008';     % child 'new' or 'old' type scoord
 ndomx = 2; ndomy = 2; %-> chunking needed to avoid OOM.
 
@@ -20,14 +20,14 @@ nc_path_frc = '/home/hsinyi/roms_data/NCOM_DATA_NC/';
 path_figure='/home/hsinyi/figure/20260826_900_test/'; 
 grid_path = '/home/hsinyi/roms_data/grid/';
 initial_path  = '/home/hsinyi/roms_data/ini/';
-boundary_path = '/home/hsinyi/roms_data/bry_63/';
+boundary_path = '/home/hsinyi/roms_data/bry_66/';
 forcing_path = '/home/hsinyi/roms_data/frc/';
 
 bath_path='/home/hsinyi/data_notm/'; 
 
 %% name settings
 grd_name = ['roms_grd_',num2str(dx),'m'];
-ini_name = ['roms_ini_',num2str(dx),'m_63.nc'];
+ini_name = ['roms_ini_',num2str(dx),'m_66.nc'];
 %% grid build
 pgrid = read_nc_fun(parent_grid);
 pgrid = standardize_name(pgrid);

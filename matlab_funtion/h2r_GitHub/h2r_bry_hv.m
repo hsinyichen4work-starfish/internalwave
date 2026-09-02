@@ -24,7 +24,7 @@ t1 = datenum(1900,12,31,0,0,0);
 t2 = datenum(1994,1,1,0,0,0);
 
 ocean_time = t0 + t1 - t2;
-tind = 1;
+tind = ii;
 tout = ii;
 
 ncwrite(bry_filename, 'bry_time', ocean_time, tout);
@@ -104,7 +104,7 @@ for bnd = 1:4
     % Z-coordinate (3D) on minimal subgrid and child grid
     % Sasha recommends the 0 multiplication
     
-    zstt = double(ncread(pargrd,'layer_thickness', [imin jmin 1 tind], [li lj Np 1]));
+    zstt = double(ncread(pargrd,'layer_thickness', [imin jmin 1 1], [li lj Np 1]));
     zst  = permute(zstt,[3 2 1]);
     [nn,ll,mm]=size(zst);
     zst(isnan(zst)) = 0;

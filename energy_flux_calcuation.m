@@ -32,15 +32,15 @@ for folder_num = 1 : length(fod)
     for t = 1 : length(time)
         % calcuated density and mean/anomaly
         rho(:,:,:,t) = density_calcuation(z_grid,lon,lat,temp(:,:,:,t),salt(:,:,:,t));
-        [rho_bar(:,:,:,t),rho_prime(:,:,:,t)] = depth_mean_bar_cal(rho(:,:,:,t),lthick,pgrid.h);
+        [rho_bar(:,:,:,t),rho_prime(:,:,:,t)] = depth_mean_bar_cal(rho(:,:,:,t),lthick,pgrid.kb);
 
         % baroclinic pressure p'
         p(:,:,:,t) = density_pressure_cal(rho_prime(:,:,:,t),lthick);
-        [p_bar(:,:,:,t),p_prime(:,:,:,t)] = depth_mean_bar_cal(p(:,:,:,t),lthick,pgrid.h);
+        [p_bar(:,:,:,t),p_prime(:,:,:,t)] = depth_mean_bar_cal(p(:,:,:,t),lthick,pgrid.kb);
 
         % baroclinic velocity 
-        [u_bar(:,:,:,t),u_prime(:,:,:,t)] = depth_mean_bar_cal(u(:,:,:,t),lthick,pgrid.h);
-        [v_bar(:,:,:,t),v_prime(:,:,:,t)] = depth_mean_bar_cal(v(:,:,:,t),lthick,pgrid.h);
+        [u_bar(:,:,:,t),u_prime(:,:,:,t)] = depth_mean_bar_cal(u(:,:,:,t),lthick,pgrid.kb);
+        [v_bar(:,:,:,t),v_prime(:,:,:,t)] = depth_mean_bar_cal(v(:,:,:,t),lthick,pgrid.kb);
 
 
     end
