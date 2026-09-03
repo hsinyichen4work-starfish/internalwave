@@ -17,10 +17,10 @@ str = strrep(upper(sprintf('%.1e', Scoord.hc)), 'E', 'D');
 file_content = strrep(file_content, 'hc_ex', pad(str,5));
 
 
-grid_path = ['/expanse/lustre/projects/uso101/hchen54/input/grid_',fold_tile,'/'];
-bry_path = ['/expanse/lustre/projects/uso101/hchen54/input/bry_',fold_tile,'/'];
-frc_path = ['/expanse/lustre/projects/uso101/hchen54/input/frc_',fold_tile,'/'];
-ini_path = ['/expanse/lustre/projects/uso101/hchen54/input/ini_',fold_tile,'/'];
+grid_path = ['/expanse/lustre/projects/uso101/hchen54/input/grid_',TAG_USE,'/'];
+bry_path = ['/expanse/lustre/projects/uso101/hchen54/input/bry_',TAG_USE,'/'];
+frc_path = ['/expanse/lustre/projects/uso101/hchen54/input/frc_',TAG_USE,'/'];
+ini_path = ['/expanse/lustre/projects/uso101/hchen54/input/ini_',TAG_USE,'/'];
 output_path = ['/expanse/lustre/projects/uso101/hchen54/',fold_name,'/roms',];
 mkdir(['/expanse/lustre/projects/uso101/hchen54/',fold_name])
 

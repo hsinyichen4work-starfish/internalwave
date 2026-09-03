@@ -3,6 +3,7 @@ addpath(genpath('/home/hchen54/internalwave/matlab_funtion'));
 
 title = "Amazon shelf internal wave simulation - 900m & 3month stretch 6//250 "
 fold_name = 'amazon_3mon900m_6_6';
+TAG_USE = '900m_66'
 
 NP_XI=8; NP_ETA=8; node = 1; cpn = 64; do_dia = true;
 if ~(NP_XI*NP_ETA == node*cpn)
@@ -25,6 +26,11 @@ input_filenames.grd = 'roms_grd_900m';
 input_filenames.ini = 'roms_ini_900m';
 input_filenames.bry = 'roms_bry_900m';
 input_filenames.frc = 'roms_frc_900m';
+
+input_folder.grd = 'grid';
+input_folder.ini = 'initial_66';
+input_folder.bry = 'bry_66';
+input_folder.frc = 'forcing';
 filename = 'amazon_3mon.in';
 
 %%
