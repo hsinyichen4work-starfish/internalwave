@@ -6,9 +6,12 @@ zr = zlevs3(zset,0, theta_s, theta_b, hc, N, 'r', 'new2008');
 plot(diff(zr),midpoints(zr),"Marker","o","Color",[0.0660    0.4430    0.7450])
 zr2 = zlevs3(zset,0, theta_s2, theta_b2, hc2, N2, 'r', 'new2008');
 plot(diff(zr2),midpoints(zr2),"Marker","o","Color",[0.8660    0.3290         0])
+zr3 = zlevs3(zset,0, theta_s3, theta_b3, hc3, N3, 'r', 'new2008');
+plot(diff(zr3),midpoints(zr3),"Marker","o","Color",[0.5210    0.0860    0.8190])
 
-title(append("min dz = ",num2str(min(diff(zr)))," & "), ...
-    append(num2str(min(diff(zr2)))," & ",num2str(min(-diff(z_prof)))))
+title(append("min dz = ",num2str(min(diff(zr))),"&"), ...
+    append(num2str(min(diff(zr2))),"&",num2str(min(diff(zr3))),...
+    "&",num2str(min(-diff(z_prof)))))
 
 % --- Local Function ---
 function [z_prof] = get_ncom_z(pgrid,zset)

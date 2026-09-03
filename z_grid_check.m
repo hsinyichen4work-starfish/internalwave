@@ -11,6 +11,7 @@ min(cgrid.h,[],"all")
 %%
 theta_s = 6; theta_b = 3; hc = 250; N =128;
 theta_s2 = 6; theta_b2 = 0.75; hc2 = 10; N2 =128;
+theta_s3 = 6; theta_b3 = 6; hc3 = 250; N3 =128;
 
 cd('/home/hsinyi/figure/20260821_debug_fix')
 figure; clf; hold on
@@ -43,7 +44,7 @@ zset = 1000; z_diff_plt
 ax(8) = nexttile; hold on
 zset = 4500; z_diff_plt
 colorbar
-saveas(gcf,"zr_test.jpg")
+saveas(gcf,"zr_test2.jpg")
 
 %%
 [~,linear_idx] = min(abs(pgrid.h - (-10)),[],"all"); pgrid.h(linear_idx)
