@@ -1,14 +1,14 @@
 clear; clc;
 addpath(genpath('/home/hsinyi/Documents/CODE/matlab_funtion'));
 %%
-%mid_iter = 2; dx = 900; nx = 684; ny = 854; % 900 m
-mid_iter = 2; dx = 300; nx = 2048; ny = 2560; % 300 m
+mid_iter = 2; dx = 900; nx = 684; ny = 854; % 900 m
+%mid_iter = 2; dx = 300; nx = 2048; ny = 2560; % 300 m
 smooth_var.rmax = 0.15; smooth_var.hmin = 2; smooth_var.offset = 2.2;
 parent_datatype = "NCOM"; % "NCOM" OR "ROMS"
 
 chd_thetas = 6; chd_thetab = 3; chd_hc = 250; chd_N = 128;
 chd_ang   = 'rad'; chdscoord = 'new2008';     % child 'new' or 'old' type scoord
-ndomx = 4; ndomy = 4; %-> chunking needed to avoid OOM.
+ndomx = 2; ndomy = 2; %-> chunking needed to avoid OOM.
 
 dating = datenum("20220822","yyyymmdd") : datenum("20221130","yyyymmdd");
 %% path settings

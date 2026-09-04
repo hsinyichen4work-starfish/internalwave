@@ -41,8 +41,6 @@ for folder_num = 1 : length(fod)
         % baroclinic velocity 
         [u_bar(:,:,:,t),u_prime(:,:,:,t)] = depth_mean_bar_cal(u(:,:,:,t),lthick,pgrid.kb);
         [v_bar(:,:,:,t),v_prime(:,:,:,t)] = depth_mean_bar_cal(v(:,:,:,t),lthick,pgrid.kb);
-
-
     end
 end
 

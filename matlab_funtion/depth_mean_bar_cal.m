@@ -1,25 +1,43 @@
-function [var_bar, var_prime] = depth_mean_bar_cal(var, thickness, kb)
-    if nargin < 3
-        H = sum(thickness, ndims(thickness));
-        var_bar = sum(var.*thickness, ndims(var)) ./ H;
-    else
-        kb(isnan(kb)) = 0;                      % land points: zero active layers
+function [var_bar, var_prime] = depth_mean_bar_cal(var, thickness, zdim, kb)
+% DEPTH_MEAN_BAR_CAL  Thickness-weighted depth mean and perturbation.
+%
+%   [var_bar, var_prime] = depth_mean_bar_cal(var, thickness, zdim)
+%   [var_bar, var_prime] = depth_mean_bar_cal(var, thickness, zdim, kb)
+%
+% Works for any of:
+%   var,thickness : (x,y,z)    -> zdim = 3
+%   var,thickness : (x,y,z,t)  -> zdim = 3
+%   var,thickness : (x,z)      -> zdim = 2
+%   var,thickness : (x,z,t)    -> zdim = 2
+%
+% var_bar is the depth-weighted mean, with the vertical dimension
+% collapsed to a singleton (so it still broadcasts cleanly against var
+% when forming var_prime). kb, if given, is the number of active (wet)
+% layers with the same shape as var/thickness but WITHOUT the vertical
+% dimension (singleton there).
+%
+% zdim is REQUIRED: array shape alone can't tell a (x,y,z) array from a
+% (x,z,t) array, since both have the same ndims.
 
-        nz = size(thickness, ndims(thickness));
-        if ndims(thickness) == 3
-            layer_idx = reshape(1:nz, 1, 1, nz);
-        elseif ndims(thickness) == 2
-            layer_idx = reshape(1:nz, 1, nz);
-        else
-            error('thickness must be 2D or 3D')
-        end
-        active_mask = layer_idx <= kb;           % broadcasts against kb (nx,ny) or (npts,1)
+if nargin < 3 || isempty(zdim)
+    error('depth_mean_bar_cal:zdim', ...
+        'zdim (the dimension index of the vertical coordinate) must be specified explicitly.');
+end
 
-        var(~active_mask) = 0;
-        thickness(~active_mask) = 0;
+nd = ndims(thickness);
+nz = size(thickness, zdim);
 
-        H = sum(thickness, ndims(thickness));    % recomputed from the SAME masked array
-        var_bar = sum(var.*thickness, ndims(var)) ./ H;
-    end
-    var_prime = var - var_bar;
+if nargin >= 4 && ~isempty(kb)
+    kb(isnan(kb)) = 0;                        % land points: zero active layers
+    layer_shape = ones(1, nd);
+    layer_shape(zdim) = nz;
+    layer_idx = reshape(1:nz, layer_shape);   % broadcasts against kb
+    active_mask = layer_idx <= kb;
+    var(~active_mask) = 0;
+    thickness(~active_mask) = 0;
+end
+
+H = sum(thickness, zdim);                      % recomputed from the SAME masked array
+var_bar = sum(var .* thickness, zdim) ./ H;     % singleton along zdim
+var_prime = var - var_bar;                      % implicit expansion over zdim
 end

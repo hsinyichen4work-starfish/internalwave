@@ -98,124 +98,124 @@ saveas(gcf,"check_rightbath.jpg")
 saveas(gcf,"check_rightbath.fig")
 
 %%
-cd(figure_path)
-if ~isfolder('ssh_check'); mkdir('ssh_check'); end
-cd ssh_check
-for folder_num = 1 : length(fod)
-    zeta = ncread(append(nc_path_ini_bry,fod(folder_num),'_ssh.nc'),"ssh");
-    cbry_name = append('roms_bry_',num2str(dx),'m_',fod(folder_num),'.nc');
-    cbry = read_nc_fun(append(child_bry_path,cbry_name));
+% cd(figure_path)
+% if ~isfolder('ssh_check'); mkdir('ssh_check'); end
+% cd ssh_check
+% for folder_num = 1 : length(fod)
+%     zeta = ncread(append(nc_path_ini_bry,fod(folder_num),'_ssh.nc'),"ssh");
+%     cbry_name = append('roms_bry_',num2str(dx),'m_',fod(folder_num),'.nc');
+%     cbry = read_nc_fun(append(child_bry_path,cbry_name));
 
-    for t = 1 : length(cbry.bry_time)
-        dum = zeta(:,:,t);
-        figure; clf;
-        ti = tiledlayout(2,2); ti.Padding = "compact"; ti.TileSpacing = "tight";
-        nexttile; hold on
-        plot(east.bnd_lat,cbry.zeta_east(:,t),"LineWidth",2);
-        plot(east.lat_path,dum(east.lin_idx),"LineWidth",1,"LineStyle","--");
-        title("east ssh")
+%     for t = 1 : length(cbry.bry_time)
+%         dum = zeta(:,:,t);
+%         figure(1); clf;
+%         ti = tiledlayout(2,2); ti.Padding = "compact"; ti.TileSpacing = "tight";
+%         nexttile; hold on
+%         plot(east.bnd_lat,cbry.zeta_east(:,t),"LineWidth",2);
+%         plot(east.lat_path,dum(east.lin_idx),"LineWidth",1,"LineStyle","--");
+%         title("east ssh")
 
-        nexttile; hold on
-        plot(west.bnd_lat,cbry.zeta_west(:,t),"LineWidth",2);
-        plot(west.lat_path,dum(west.lin_idx),"LineWidth",1,"LineStyle","--");
-        title("west ssh")
+%         nexttile; hold on
+%         plot(west.bnd_lat,cbry.zeta_west(:,t),"LineWidth",2);
+%         plot(west.lat_path,dum(west.lin_idx),"LineWidth",1,"LineStyle","--");
+%         title("west ssh")
 
-        nexttile; hold on
-        plot(north.bnd_lon,cbry.zeta_north(:,t),"LineWidth",2);
-        plot(north.lon_path,dum(north.lin_idx),"LineWidth",1,"LineStyle","--");
-        title("north ssh")
+%         nexttile; hold on
+%         plot(north.bnd_lon,cbry.zeta_north(:,t),"LineWidth",2);
+%         plot(north.lon_path,dum(north.lin_idx),"LineWidth",1,"LineStyle","--");
+%         title("north ssh")
 
-        nexttile; hold on
-        plot(south.bnd_lon,cbry.zeta_south(:,t),"LineWidth",2);
-        plot(south.lon_path,dum(south.lin_idx),"LineWidth",1,"LineStyle","--");
-        title("south ssh")
+%         nexttile; hold on
+%         plot(south.bnd_lon,cbry.zeta_south(:,t),"LineWidth",2);
+%         plot(south.lon_path,dum(south.lin_idx),"LineWidth",1,"LineStyle","--");
+%         title("south ssh")
 
-        saveas(gcf,append("check_zeta_",datestr(cbry.bry_time(t) + t2,"yyyymmddHH"),".jpg")) 
-        disp(append("save check_zeta_",datestr(cbry.bry_time(t) + t2,"yyyymmddHH"),".jpg"))
-    end
-end
+%         saveas(gcf,append("check_zeta_",datestr(cbry.bry_time(t) + t2,"yyyymmddHH"),".jpg")) 
+%         disp(append("save check_zeta_",datestr(cbry.bry_time(t) + t2,"yyyymmddHH"),".jpg"))
+%     end
+% end
 
-%%
-cd(figure_path)
-if ~isfolder('temp_check'); mkdir('temp_check'); end
-cd temp_check
-for folder_num = 1 : length(fod)
+% %%
+% cd(figure_path)
+% if ~isfolder('temp_check'); mkdir('temp_check'); end
+% cd temp_check
+% for folder_num = 1 : length(fod)
     
-    temp = ncread(append(nc_path_ini_bry,fod(folder_num),'_ts.nc'),"layer_temperature");
-    cbry_name = append('roms_bry_',num2str(dx),'m_',fod(folder_num),'.nc');
-    cbry = read_nc_fun(append(child_bry_path,cbry_name));
+%     temp = ncread(append(nc_path_ini_bry,fod(folder_num),'_ts.nc'),"layer_temperature");
+%     cbry_name = append('roms_bry_',num2str(dx),'m_',fod(folder_num),'.nc');
+%     cbry = read_nc_fun(append(child_bry_path,cbry_name));
 
-    south.child_z = zlevs3(repmat(south.bathc,1,length(cbry.bry_time)), ...
-        cbry.zeta_south, theta_s, theta_b, hc, N, 'r', 'new2008');
-    north.child_z = zlevs3(repmat(north.bathc,1,length(cbry.bry_time)), ...
-        cbry.zeta_north, theta_s, theta_b, hc, N, 'r', 'new2008');
-    west.child_z = zlevs3(repmat(west.bathc',1,length(cbry.bry_time)), ...
-        cbry.zeta_west, theta_s, theta_b, hc, N, 'r', 'new2008');
-    east.child_z = zlevs3(repmat(east.bathc',1,length(cbry.bry_time)), ...
-        cbry.zeta_east, theta_s, theta_b, hc, N, 'r', 'new2008');
+%     south.child_z = zlevs3(repmat(south.bathc,1,length(cbry.bry_time)), ...
+%         cbry.zeta_south, theta_s, theta_b, hc, N, 'r', 'new2008');
+%     north.child_z = zlevs3(repmat(north.bathc,1,length(cbry.bry_time)), ...
+%         cbry.zeta_north, theta_s, theta_b, hc, N, 'r', 'new2008');
+%     west.child_z = zlevs3(repmat(west.bathc',1,length(cbry.bry_time)), ...
+%         cbry.zeta_west, theta_s, theta_b, hc, N, 'r', 'new2008');
+%     east.child_z = zlevs3(repmat(east.bathc',1,length(cbry.bry_time)), ...
+%         cbry.zeta_east, theta_s, theta_b, hc, N, 'r', 'new2008');
 
-    for t = 1 : length(cbry.bry_time)
-        for k = 1 : pN
-            dum = squeeze(temp(:,:,k,t));
-            south.temp_z(:,k) =  dum(south.lin_idx);
-            north.temp_z(:,k) =  dum(north.lin_idx);
-            west.temp_z(:,k) =  dum(west.lin_idx);
-            east.temp_z(:,k) =  dum(east.lin_idx);
-        end
+%     for t = 1 : length(cbry.bry_time)
+%         for k = 1 : pN
+%             dum = squeeze(temp(:,:,k,t));
+%             south.temp_z(:,k) =  dum(south.lin_idx);
+%             north.temp_z(:,k) =  dum(north.lin_idx);
+%             west.temp_z(:,k) =  dum(west.lin_idx);
+%             east.temp_z(:,k) =  dum(east.lin_idx);
+%         end
 
-        figure; clf; colormap(thermal)
-        ti = tiledlayout(4,2); ti.Padding = "compact"; ti.TileSpacing = "tight";
-        axe(1) = nexttile; hold on
-        mypcolor(repmat(east.lat_path,1,pN),east.parent_z,east.temp_z)
-        shading flat; 
-        title("east temp (parent)")
-        axe(2) = nexttile; hold on
-        mypcolor(repmat(east.bnd_lat',1,N),squeeze(east.child_z(:,:,t))',squeeze(cbry.temp_east(:,:,t)))
-        shading flat; colorbar
-        title("east temp (child)")
-        linkaxes(axe,'xy');
+%         figure(1); clf; colormap(thermal)
+%         ti = tiledlayout(4,2); ti.Padding = "compact"; ti.TileSpacing = "tight";
+%         axe(1) = nexttile; hold on
+%         mypcolor(repmat(east.lat_path,1,pN),east.parent_z,east.temp_z)
+%         shading flat; 
+%         title("east temp (parent)")
+%         axe(2) = nexttile; hold on
+%         mypcolor(repmat(east.bnd_lat',1,N),squeeze(east.child_z(:,:,t))',squeeze(cbry.temp_east(:,:,t)))
+%         shading flat; colorbar
+%         title("east temp (child)")
+%         linkaxes(axe,'xy');
         
 
-        axw(1) = nexttile; hold on
-        mypcolor(repmat(west.lat_path,1,pN),west.parent_z,west.temp_z)
-        shading flat; 
-        title("west temp (parent)")
-        axw(2) = nexttile; hold on
-        mypcolor(repmat(west.bnd_lat',1,N),squeeze(west.child_z(:,:,t))',squeeze(cbry.temp_west(:,:,t)))
-        shading flat; colorbar
-        title("west temp (child)")
-        linkaxes(axw,'xy');
+%         axw(1) = nexttile; hold on
+%         mypcolor(repmat(west.lat_path,1,pN),west.parent_z,west.temp_z)
+%         shading flat; 
+%         title("west temp (parent)")
+%         axw(2) = nexttile; hold on
+%         mypcolor(repmat(west.bnd_lat',1,N),squeeze(west.child_z(:,:,t))',squeeze(cbry.temp_west(:,:,t)))
+%         shading flat; colorbar
+%         title("west temp (child)")
+%         linkaxes(axw,'xy');
 
-        axn(1) = nexttile; hold on
-        mypcolor(repmat(north.lon_path,1,pN),north.parent_z,north.temp_z)
-        shading flat; 
-        title("north temp (parent)")
-        axn(2) = nexttile; hold on
-        mypcolor(repmat(north.bnd_lon,1,N),squeeze(north.child_z(:,:,t))',squeeze(cbry.temp_north(:,:,t)))
-        shading flat; colorbar
-        title("north temp (child)")
-        linkaxes(axn,'xy');
+%         axn(1) = nexttile; hold on
+%         mypcolor(repmat(north.lon_path,1,pN),north.parent_z,north.temp_z)
+%         shading flat; 
+%         title("north temp (parent)")
+%         axn(2) = nexttile; hold on
+%         mypcolor(repmat(north.bnd_lon,1,N),squeeze(north.child_z(:,:,t))',squeeze(cbry.temp_north(:,:,t)))
+%         shading flat; colorbar
+%         title("north temp (child)")
+%         linkaxes(axn,'xy');
 
-        axs(1) = nexttile; hold on
-        mypcolor(repmat(south.lon_path,1,pN),south.parent_z,south.temp_z)
-        shading flat; 
-        title("south temp (parent)")
-        axs(2) = nexttile; hold on
-        mypcolor(repmat(south.bnd_lon,1,N),squeeze(south.child_z(:,:,t))',squeeze(cbry.temp_south(:,:,t)))
-        shading flat; colorbar
-        title("south temp (child)")
-        linkaxes(axs,'xy');
+%         axs(1) = nexttile; hold on
+%         mypcolor(repmat(south.lon_path,1,pN),south.parent_z,south.temp_z)
+%         shading flat; 
+%         title("south temp (parent)")
+%         axs(2) = nexttile; hold on
+%         mypcolor(repmat(south.bnd_lon,1,N),squeeze(south.child_z(:,:,t))',squeeze(cbry.temp_south(:,:,t)))
+%         shading flat; colorbar
+%         title("south temp (child)")
+%         linkaxes(axs,'xy');
 
-        clim([axe axw axn],[0 30])
-        clim(axs,[25 30])
-        saveas(gcf,append("check_temp_",datestr(cbry.bry_time(t) + t2,"yyyymmddHH"),".jpg")) 
+%         clim([axe axw axn],[0 30])
+%         clim(axs,[25 30])
+%         saveas(gcf,append("check_temp_",datestr(cbry.bry_time(t) + t2,"yyyymmddHH"),".jpg")) 
 
-        ylim([axe axw axn axs],[-100 0]); clim([axe axw axn axs],[25 30])
-        saveas(gcf,append("check_zoomtemp_",datestr(cbry.bry_time(t) + t2,"yyyymmddHH"),".jpg")) 
-        disp(append("save check_temp_",datestr(cbry.bry_time(t) + t2,"yyyymmddHH"),".jpg"))
-    end
+%         ylim([axe axw axn axs],[-100 0]); clim([axe axw axn axs],[25 30])
+%         saveas(gcf,append("check_zoomtemp_",datestr(cbry.bry_time(t) + t2,"yyyymmddHH"),".jpg")) 
+%         disp(append("save check_temp_",datestr(cbry.bry_time(t) + t2,"yyyymmddHH"),".jpg"))
+%     end
 
-end
+% end
 
 %%
 cd(figure_path)
@@ -259,7 +259,7 @@ for folder_num = 1 : length(fod)
         [south.u_rot, south.v_rot] = vel_rot(center2face(cbry.u_south(:,:,t),1),cbry.v_south(:,:,t),...
             repmat(rad2deg(south.angc),1,N),'grid2geo');
 
-        figure; clf; colormap(balance)
+        figure(2); clf; colormap(balance)
         ti = tiledlayout(4,2); ti.Padding = "compact"; ti.TileSpacing = "tight";
         axe(1) = nexttile; hold on
         mypcolor(repmat(east.lat_path,1,pN),east.parent_z,east.u_z)
