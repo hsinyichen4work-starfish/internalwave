@@ -1,8 +1,8 @@
 clear; clc;
 addpath(genpath('/home/hchen54/internalwave/matlab_funtion'));
 
-title = "Amazon shelf internal wave simulation - 900m & 3month stretch 6//250 "
-fold_name = 'amazon_3mon900m_6_6';
+title = "Amazon shelf internal wave simulation - 900m & 3month stretch 6/6/250 "
+fold_name = 'amazon_900m_66_dttest';
 TAG_USE = '900m_66'
 
 NP_XI=8; NP_ETA=8; node = 1; cpn = 64; do_dia = true;
@@ -10,8 +10,8 @@ if ~(NP_XI*NP_ETA == node*cpn)
     error("tiled and node mismatch!!!")
 end
 
-time_stepping.NTIMES = 129600;
-time_stepping.dt = 20; time_stepping.NDTFAST = 13;
+time_stepping.NTIMES = 1000;
+time_stepping.dt = 180; time_stepping.NDTFAST = 90;
 time_stepping.rst = 86400;
 time_stepping.his = 3600;
 time_stepping.avg = 3600;
