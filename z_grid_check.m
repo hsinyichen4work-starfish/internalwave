@@ -45,7 +45,7 @@ ax(8) = nexttile; hold on
 zset = 4500; z_diff_plt
 colorbar
 saveas(gcf,"zr_test2.jpg")
-
+saveas(gcf,"zr_test2.fig")
 %%
 [~,linear_idx] = min(abs(pgrid.h - (-10)),[],"all"); pgrid.h(linear_idx)
 [row, col] = ind2sub(size(pgrid.h), linear_idx); pgrid.h(row, col)
