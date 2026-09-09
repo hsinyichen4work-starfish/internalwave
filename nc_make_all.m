@@ -15,7 +15,7 @@ dating = datenum("20220822","yyyymmdd") : datenum("20221130","yyyymmdd");
 %% path settings
 parent_grid = '/home/mbui/ModelOutput/NCOM/grid/ohgrd_2.nc';
 parent_data_path = '/home/mbui/ModelOutput/NCOM/data/';
-par_name = '2022082300'; ini_par_path  = [parent_data_path,par_name]; 
+par_name = '2022082400'; ini_par_path  = [parent_data_path,par_name]; 
 nc_path_ini_bry = '/home/hsinyi/roms_data/NCOM_DATA_NC/';
 nc_path_frc = '/home/hsinyi/roms_data/NCOM_DATA_NC/';
 

@@ -20,6 +20,7 @@ projectpath = '/expanse/lustre/projects/uso101/hchen54/';
 
 grid_path = [projectpath,'input/grid_',TAG_USE,'/'];
 bry_path = [projectpath,'input/bry_',TAG_USE,'/'];
+dbry_path = [projectpath,'input/dynbry_',TAG_USE,'/'];
 frc_path = [projectpath,'input/frc_',TAG_USE,'/'];
 ini_path = [projectpath,'input/ini_',TAG_USE,'/'];
 output_path = [projectpath,fold_name,'/roms',];
@@ -47,6 +48,15 @@ if length(fil) > 1
     end
 end
 file_content = strrep(file_content, 'EXAMPLE_bry', str);
+
+fil = dir([projectpath,'input/',input_folder.bry,'/',input_filenames.dbry,'*']);
+str = string([dbry_path,fil(1).name]);
+if length(fil) > 1
+    for j = 2 : length(fil)
+        str = str + newline + string(['     ',dbry_path,fil(j).name]);
+    end
+end
+file_content = strrep(file_content, 'EXAMPLE_dbry', str);
 
 file_content = strrep(file_content, 'EXAMPLE_output',output_path);
 

@@ -11,7 +11,6 @@ child_bry_path = '/home/hsinyi/roms_data/bry_63/';
 flux_out_path = '/home/hsinyi/roms_data/bry_dynamic_flux_63/'; 
 figure_path = '/home/hsinyi/figure/20260904dynamic_bry/';
 
-
 load([dbry_path,'bryfile_dynamic900_imporve.mat'])
 cgrid = read_nc_fun([child_grid_path,cgrid_name]);
 disp(['read in',cgrid_name ])
@@ -19,7 +18,7 @@ cgrid.lon_rho(cgrid.lon_rho>180) = cgrid.lon_rho(cgrid.lon_rho>180) -360;
 t1 = datenum('1994/01/01');
 
 %%
-dating = datenum("20220822","yyyymmdd") : datenum("20221126","yyyymmdd");
+dating = datenum("20220822","yyyymmdd") : datenum("20221125","yyyymmdd");
 cbry_name = ['roms_bry_',num2str(dx),'m_',datestr(dating(1),"yyyymmddHH"),'.nc'];
 cbry = read_nc_fun([child_bry_path,cbry_name]);
 disp(['read in',cbry_name ])

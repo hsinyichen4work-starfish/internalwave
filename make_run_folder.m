@@ -1,37 +1,38 @@
 clear; clc;
 addpath(genpath('/home/hchen54/internalwave/matlab_funtion'));
 
-title = "Amazon shelf internal wave simulation - 900m & 3month stretch 6/6/250 "
-fold_name = 'amazon_900m_66_dttest';
-TAG_USE = '900m_66'
+title = "Amazon shelf internal wave simulation 1 month - 900m & start at 0824 stretch 6/3/250 "
+fold_name = 'amazon_900m_dbry';
+TAG_USE = '900m_dbry'
 
 NP_XI=8; NP_ETA=8; node = 1; cpn = 64; do_dia = true;
 if ~(NP_XI*NP_ETA == node*cpn)
     error("tiled and node mismatch!!!")
 end
 
-time_stepping.NTIMES = 1000;
+time_stepping.NTIMES = 14400;
 time_stepping.dt = 180; time_stepping.NDTFAST = 90;
 time_stepping.rst = 86400;
 time_stepping.his = 3600;
 time_stepping.avg = 3600;
 time_stepping.dia = time_stepping.his;
 Scoord.THETA_S = 6;
-Scoord.THETA_B = 6;
+Scoord.THETA_B = 3;
 Scoord.hc = 250;
 grid.LLm=684; grid.MMm=854; grid.N=128; %% 900m grid
 
-walltime = '02:00:00';
+walltime = '24:00:00';
 input_filenames.grd = 'roms_grd_900m';
-input_filenames.ini = 'roms_ini_900m';
+input_filenames.ini = 'roms_ini_900m2022082400';
 input_filenames.bry = 'roms_bry_900m';
+input_filenames.dbry = 'roms_dbry_flux_900m';
 input_filenames.frc = 'roms_frc_900m';
 
 input_folder.grd = 'grid';
-input_folder.ini = 'initial_66';
-input_folder.bry = 'bry_66';
+input_folder.ini = 'ini_63';
+input_folder.bry = 'bry_63';
 input_folder.frc = 'forcing';
-filename = 'amazon_3mon.in';
+filename = 'amazon_1mon_dbry.in';
 
 %%
 example_folder = '/home/hchen54/myrun/example/';
@@ -65,5 +66,8 @@ oceanvar_make
 
 copyfile([example_folder,'param.opt'],new_folder)
 param_make
+
+copyfile([example_folder,'obc_tune.opt'],new_folder)
+copyfile([example_folder,'extract_data.opt'],new_folder)
 
 disp("new folder make")

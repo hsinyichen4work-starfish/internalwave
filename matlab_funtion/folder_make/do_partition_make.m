@@ -17,11 +17,13 @@ file_content = strrep(file_content, 'FGRDEX', input_folder.grd);
 file_content = strrep(file_content, 'FINIEX', input_folder.ini);
 file_content = strrep(file_content, 'FBRYEX', input_folder.bry);
 file_content = strrep(file_content, 'FFRCEX', input_folder.frc);
+file_content = strrep(file_content, 'FDBEX', input_folder.bry);
 
 file_content = strrep(file_content, 'GRDEX', input_filenames.grd);
 file_content = strrep(file_content, 'INIEX', input_filenames.ini);
 file_content = strrep(file_content, 'BRYEX', input_filenames.bry);
 file_content = strrep(file_content, 'FRCEX', input_filenames.frc);
+file_content = strrep(file_content, 'DBEX', input_filenames.dbry);
 
 % Write the modified content back to the file
 fid = fopen([new_folder,'partition_input'], 'w');
