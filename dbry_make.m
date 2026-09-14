@@ -47,6 +47,12 @@ date_end   = "20221125";
 cutoff_days = 28/24;   % ~29 hours, per your PI's 28-30 hr suggestion
 N_butter    = 5;
 
+rho0 = 1027.5;   % ROMS reference density (kg/m^3). The dynamic boundary
+                  % forcing ROMS reads (up_west/up_east/vp_south/vp_north)
+                  % is rho0-normalized, so Fx/Fy (raw, units W/m) are
+                  % divided by rho0 only when writing the nc file below;
+                  % the MAT files keep the raw, non-normalized W/m values.
+
 CHUNK_DAYS = 15;   % days of *output* produced per chunk
 PAD_DAYS   = 6;    % extra days read (and discarded) on each side of a
                     % chunk to give the highpass filter a clean transient
@@ -61,6 +67,13 @@ save_mat = true;   % also persist the big *_prime/*_fast fields (for
                     % dbrt_900_imporve.m did
 mat_save = fullfile('/home/hsinyi/matlab_file/bry_saving', ...
     append("bryfile_dynamic",num2str(dx),"_imporve.mat"));
+
+% daily MAT files (same fields as mat_save above, sliced to one day each,
+% NOT rho0-normalized) go here -- kept separate from flux_out_path (the
+% daily nc files, which ARE rho0-normalized) since they serve different
+% purposes: the nc files feed ROMS, the daily MAT files are for
+% diagnostics/plotting with both Fx and Fy on every boundary
+daily_mat_path = '/home/hsinyi/matlab_file/dbry_saving/';
 
 dirstr = ["north";"south";"east";"west"];
 
@@ -207,13 +220,19 @@ if save_mat
     fprintf('done computing. saved diagnostic fields to %s\n', mat_save);
 end
 
-%% ---- write the daily flux netCDF files (from write_dynamic_bry_flux.m) ----
+%% ---- write the daily flux netCDF files + daily MAT files ----
 % Reads straight out of small_time / small.<dir>.Fx / small.<dir>.Fy --
-% no MAT-file reload needed since this script just computed them.
+% no MAT-file reload needed since this script just computed them. The big
+% *_prime/*_fast fields for the daily MAT files are read back (per-day
+% slice only) from the still-open `mo` matfile handle.
 real_time = small_time(:) + t1;
 fprintf('flux time range: %s to %s\n', datestr(real_time(1)), datestr(real_time(end)));
 
-write_daily_flux_nc(dating, fod, child_bry_path, flux_out_path, dx, small_time, small);
+if ~save_mat
+    mo = [];   % write_daily_outputs skips the daily-MAT step when save_mat is false
+end
+write_daily_outputs(dating, fod, child_bry_path, flux_out_path, daily_mat_path, ...
+    dx, rho0, small_time, small, geo, dirstr, save_mat, mo, cutoff_days, N_butter);
 
 %% ============================================================================
 function win = read_padded_window(child_bry_path, dx, fod, dirstr, p_start, p_end, c_start, c_end)
@@ -302,18 +321,28 @@ function out = process_direction(d, win, geo, theta_s, theta_b, hc, nz, cutoff_d
     out.v_fast  = single(v_fast(:,:,interior_idx));
 end
 
-function write_daily_flux_nc(dating, fod, child_bry_path, flux_out_path, dx, time, small)
-% Writes one flux netCDF file per day, matching the existing
-% roms_bry_<dx>m_<fod>.nc naming convention, containing:
+function write_daily_outputs(dating, fod, child_bry_path, flux_out_path, daily_mat_path, ...
+    dx, rho0, time, small, geo, dirstr, save_mat, mo, cutoff_days, N_butter)
+% For each day: writes (1) a flux netCDF file matching the existing
+% roms_bry_<dx>m_<fod>.nc naming convention, containing
 %   up_west, up_east    (from Fx -- west/east boundaries)
 %   vp_south, vp_north  (from Fy -- south/north boundaries)
 %   bry_time            (same raw values/epoch as the existing bry files)
+% and, if save_mat, (2) a daily MAT file (bryfile_dynamic<dx>_<yyyymmdd>.mat)
+% holding the same fields as the master mat_save file (both Fx and Fy on
+% every boundary, plus the big *_prime/*_fast fields), sliced to that day.
 %
-% Writes the RAW grid-relative Fx/Fy (e.g. small.north.Fx/Fy), NOT the
-% geo-rotated versions: ROMS's own internal diag_pflx flux is
-% grid-relative (xi/eta), so the externally-supplied Fext must be in the
-% same convention for the obc_tune comparison to be meaningful.
+% Writes the RAW grid-relative Fx/Fy (e.g. small.north.Fx/Fy) to the nc
+% file, NOT the geo-rotated versions: ROMS's own internal diag_pflx flux
+% is grid-relative (xi/eta), so the externally-supplied Fext must be in
+% the same convention for the obc_tune comparison to be meaningful.
+%
+% The nc fields are additionally divided by rho0 before writing: ROMS
+% reads up_west/up_east/vp_south/vp_north as rho0-normalized (kinematic)
+% flux. The daily MAT files keep the raw, non-normalized (W/m) Fx/Fy, same
+% as the master mat_save file, since that's more useful for diagnostics.
     if ~exist(flux_out_path,'dir'); mkdir(flux_out_path); end
+    if save_mat && ~exist(daily_mat_path,'dir'); mkdir(daily_mat_path); end
 
     % map: boundary direction -> {output varname, source Fx/Fy field,
     % REQUIRED along-boundary dimension name -- must be exactly 'eta_rho'
@@ -325,7 +354,6 @@ function write_daily_flux_nc(dating, fod, child_bry_path, flux_out_path, dx, tim
         'south', struct('varname','vp_south','src', small.south.Fy, 'dim','xi_rho'), ...
         'north', struct('varname','vp_north','src', small.north.Fy, 'dim','xi_rho') ...
     );
-    dirstr = ["west","east","south","north"];
 
     for d = 1:length(dating)
 
@@ -350,13 +378,13 @@ function write_daily_flux_nc(dating, fod, child_bry_path, flux_out_path, dx, tim
             continue
         end
 
+        day_time = time(idx);   % same values/epoch as the existing bry files
+
+        %% -- nc file: rho0-normalized flux, as ROMS expects it --
         fname = fullfile(flux_out_path, ...
             append('roms_dbry_flux_',num2str(dx),'m_', fod(d), '.nc'));
         if exist(fname,'file'); delete(fname); end
 
-        % bry_time: same values/epoch as the existing bry files (just the
-        % subset of samples falling on this calendar day)
-        day_time = time(idx);
         nccreate(fname, 'bry_time', 'Dimensions', {'bry_time', numel(idx)}, ...
                  'Datatype', 'double');
         ncwrite(fname, 'bry_time', day_time);
@@ -366,24 +394,67 @@ function write_daily_flux_nc(dating, fod, child_bry_path, flux_out_path, dx, tim
         for j = 1:length(dirstr)
             dname = char(dirstr(j));
             varname  = dir_map.(dname).varname;
-            src_full = dir_map.(dname).src;         % (nalong, nt_total)
+            src_full = dir_map.(dname).src;         % (nalong, nt_total), raw W/m
             along_dimname = dir_map.(dname).dim;    % 'eta_rho' or 'xi_rho'
 
-            data_day = src_full(:, idx);            % (nalong, ndays_samples)
+            data_day = src_full(:, idx) / rho0;      % (nalong, ndays_samples), rho0-normalized
 
             nccreate(fname, varname, ...
                      'Dimensions', {along_dimname, size(data_day,1), 'bry_time', numel(idx)}, ...
                      'Datatype', 'double');
             ncwrite(fname, varname, data_day);
             ncwriteatt(fname, varname, 'long_name', ...
-                append('HF baroclinic energy flux, ', dname, ' boundary'));
-            ncwriteatt(fname, varname, 'units', 'W/m');
+                append('HF baroclinic energy flux, ', dname, ' boundary, rho0-normalized'));
+            ncwriteatt(fname, varname, 'units', 'm4 s-3');
+            ncwriteatt(fname, varname, 'rho0', rho0);
+            ncwriteatt(fname, varname, 'note', 'raw flux (W/m) divided by rho0 (kg/m3)');
         end
 
         if mod(d,10) == 0 || d == length(dating)
             fprintf('wrote %s (%d samples)\n', fname, numel(idx));
         end
+
+        %% -- daily MAT file: raw (non-normalized) fields, both Fx and Fy --
+        if save_mat
+            S = struct();
+            S.dx = dx; S.cutoff_days = cutoff_days; S.N_butter = N_butter;
+            S.rho0 = rho0;   % provenance only -- fields below are NOT divided by it
+            S.time = day_time;
+
+            for j = 1:length(dirstr)
+                dc = char(dirstr(j));
+
+                S.([dc,'_lon'])     = geo.(dirstr(j)).lon;
+                S.([dc,'_lat'])     = geo.(dirstr(j)).lat;
+                S.([dc,'_bathc'])   = geo.(dirstr(j)).bathc;
+                S.([dc,'_angc'])    = geo.(dirstr(j)).angc;
+
+                S.([dc,'_ssh'])     = small.(dirstr(j)).ssh(:, idx);
+                S.([dc,'_rho_bar']) = small.(dirstr(j)).rho_bar(:, idx);
+                S.([dc,'_p_bar'])   = small.(dirstr(j)).p_bar(:, idx);
+                S.([dc,'_u_bar'])   = small.(dirstr(j)).u_bar(:, idx);
+                S.([dc,'_v_bar'])   = small.(dirstr(j)).v_bar(:, idx);
+                S.([dc,'_Fx'])      = small.(dirstr(j)).Fx(:, idx);
+                S.([dc,'_Fy'])      = small.(dirstr(j)).Fy(:, idx);
+
+                % big per-timestep fields -- read back (day slice only) from
+                % the on-disk mo matfile rather than held in RAM the whole run
+                S.([dc,'_p_prime']) = mo.([dc,'_p_prime'])(:,:,idx);
+                S.([dc,'_u_prime']) = mo.([dc,'_u_prime'])(:,:,idx);
+                S.([dc,'_v_prime']) = mo.([dc,'_v_prime'])(:,:,idx);
+                S.([dc,'_p_fast'])  = mo.([dc,'_p_fast'])(:,:,idx);
+                S.([dc,'_u_fast'])  = mo.([dc,'_u_fast'])(:,:,idx);
+                S.([dc,'_v_fast'])  = mo.([dc,'_v_fast'])(:,:,idx);
+            end
+
+            mat_fname = fullfile(daily_mat_path, ...
+                append('bryfile_dynamic',num2str(dx),'_', datestr(dating(d),'yyyymmdd'), '.mat'));
+            save(mat_fname, '-struct', 'S', '-v7.3');
+        end
     end
 
-    fprintf('done -- %d daily flux files written to %s\n', length(dating), flux_out_path);
+    fprintf('done -- %d daily flux nc files written to %s\n', length(dating), flux_out_path);
+    if save_mat
+        fprintf('done -- %d daily MAT files written to %s\n', length(dating), daily_mat_path);
+    end
 end
