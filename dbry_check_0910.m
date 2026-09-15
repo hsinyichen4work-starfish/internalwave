@@ -44,6 +44,7 @@ probe = read_nc_fun([child_bry_path,probe_list(1).name]);
 theta_s = probe.theta_s; theta_b = probe.theta_b; hc = probe.hc;
 clear probe
 %%
+%{
 for t = 1 : length(file_list)
     dbry_nc  = read_nc_fun(fullfile(file_list(t).folder, file_list(t).name));
     dbry_mat = load(fullfile(file_mat_list(t).folder, file_mat_list(t).name));
@@ -150,6 +151,7 @@ for t = 1 : length(file_list)
         disp(['save flux_quiver_',datestr(dbry_mat.time(t_idx) + t1,"yyyymmddHH"),'.jpg'])
     end
 end
+%}
 
 %% load & concatenate every daily mat file into one continuous time series
 % per boundary, so figures 2/3 below show the whole ~90 day record in a
@@ -276,6 +278,22 @@ linkaxes(ax4,'x')
 saveas(gcf,sprintf('flux_timeseries_nchose%d.jpg',nchose))
 saveas(gcf,sprintf('flux_timeseries_nchose%d.fig',nchose))
 %%
-figure
-plot(bry_all.north.along,mean(bry_all.north.Fy,2))
-saveas(gcf,"test.jpg")
+cd(figure_path)
+nchose = 400;
+figure(5); clf; hold on
+til5 = tiledlayout(2,2); til5.TileSpacing = 'compact'; til5.Padding = 'compact';
+
+ax(1) = nexttile;
+plot(bry_all.north.along,mean(bry_all.north.Fy,2)); title("north boundary")
+
+ax(2) = nexttile;
+plot(bry_all.south.along,mean(bry_all.south.Fy,2)); title("south boundary")
+
+ax(3) = nexttile;
+plot(bry_all.east.along,mean(bry_all.east.Fy,2)); title("east boundary")
+
+ax(4) = nexttile;
+plot(bry_all.west.along,mean(bry_all.west.Fy,2)); title("west boundary")
+saveas(gcf,"boundary_flux_time_mean.jpg")
+linkaxes(ax,'y')
+saveas(gcf,"boundary_flux_time_mean2.jpg")
