@@ -19,12 +19,12 @@ par_name = '2022082400'; ini_par_path  = [parent_data_path,par_name];
 nc_path_ini_bry = '/home/hsinyi/roms_data/NCOM_DATA_NC/';
 nc_path_frc = '/home/hsinyi/roms_data/NCOM_DATA_NC/';
 
-path_figure='/home/hsinyi/figure/20260903_300_test/'; 
-if ~isfolder(path_figure); mkdir(path_figure); end
+% path_figure='/home/hsinyi/figure/20260903_300_test/'; 
+% if ~isfolder(path_figure); mkdir(path_figure); end
 grid_path = '/home/hsinyi/roms_data/grid/';
-initial_path  = '/home/hsinyi/roms_data/ini_63/';
+initial_path  = '/home/hsinyi/roms_data/ini/';
 if ~isfolder(initial_path); mkdir(initial_path); end
-boundary_path = '/home/hsinyi/roms_data/bry_63/';
+boundary_path = '/home/hsinyi/roms_data/bry/';
 if ~isfolder(boundary_path); mkdir(boundary_path); end
 forcing_path = '/home/hsinyi/roms_data/frc/';
 

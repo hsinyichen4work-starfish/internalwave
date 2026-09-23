@@ -45,7 +45,7 @@ function [pariniu] = make_bry_need_vel(hgrd2, vgrd2, valid_lay, grdang, par_name
         mask3d    = repmat(lndsea_xy, [1 1 lo]);    % (igrd, jgrd, lo)
         for i = 1 : igrd
             for j = 1 : jgrd
-                if ~isnan(valid_lay(i,j)) & valid_lay(i,j) < lo
+                if valid_lay(i,j) > 0 && valid_lay(i,j) < lo   % land kb is int32 fill (-2147483647), not NaN
                     mask3d(i,j,valid_lay(i,j)+1:end) = 0;
                 end
             end
@@ -76,9 +76,7 @@ function [pariniu] = make_bry_need_vel(hgrd2, vgrd2, valid_lay, grdang, par_name
         s = extract_ncom_name(parsed_u(j).name);
         field = read_ncom_flatfile(path_setup, s.fldname, s.igrd, s.jgrd, ...
             s.nest, s.datestr_in, s.timetag, s.appd, s.nlev, s.isface);
-        if ~isempty(lndsea)
-            field(mask3d == 0) = NaN;
-        end
+        % do NOT mask here: faces must stay raw (0 on land) for averaging
         u(:,:,:,j) = field;
     end
     
@@ -110,16 +108,23 @@ function [pariniu] = make_bry_need_vel(hgrd2, vgrd2, valid_lay, grdang, par_name
         s = extract_ncom_name(parsed_v(j).name);
         field = read_ncom_flatfile(path_setup, s.fldname, s.igrd, s.jgrd, ...
             s.nest, s.datestr_in, s.timetag, s.appd, s.nlev, s.isface);
-        if ~isempty(lndsea)
-            field(mask3d == 0) = NaN;
-        end
+        % do NOT mask here: faces must stay raw (0 on land) for averaging
         v(:,:,:,j) = field;
     end
     
     %% --- Average to centers, then rotate to true east/north ---
     uc = avg_face_to_center(u, 1);   % x-faces -> centers
     vc = avg_face_to_center(v, 2);   % y-faces -> centers
+    clear u v
     [u_true, v_true] = vel_rot(uc, vc, grdang_xy', 'grid2geo');
+    clear uc vc
+    if ~isempty(lndsea)
+        land3d = (mask3d == 0);
+        for t = 1:size(u_true,4)   % mask centers after averaging, one step at a time to save memory
+            ut = u_true(:,:,:,t); ut(land3d) = NaN; u_true(:,:,:,t) = ut;
+            vt = v_true(:,:,:,t); vt(land3d) = NaN; v_true(:,:,:,t) = vt;
+        end
+    end
     
     %% --- Compute MT (days since 1900-12-31) for each sorted U time step ---
     t_ref = datenum(1900,12,31,0,0,0);

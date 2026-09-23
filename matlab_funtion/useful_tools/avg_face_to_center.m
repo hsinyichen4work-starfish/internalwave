@@ -19,37 +19,30 @@ function uc = avg_face_to_center(uface, dim)
     %   ------
     %   uc : field averaged onto cell centers, same size as uface.
     %
-    %   *** IMPORTANT -- VERIFY THIS ASSUMPTION BEFORE TRUSTING THE OUTPUT ***
-    %   This function assumes uface(i,j,...) sits at the face BETWEEN
-    %   center(i-1,j) and center(i,j) -- i.e. the "west/south face" stagger
-    %   convention (matching ROMS's own u/v-point convention). If NCOM
-    %   instead stores uface(i,j,...) at the face between center(i,j) and
-    %   center(i+1,j) (the "east/north face" convention), this averaging is
-    %   shifted by one full grid cell relative to the correct answer --
-    %   not a subtle half-cell error, a full-cell one. This detail isn't
-    %   fully documented in the material available here; confirm the actual
-    %   convention against NCOM/COAMPS documentation or with Jie Yu before
-    %   relying on this for anything beyond a first-pass boundary file.
-    %   If it turns out to be the opposite convention, swap which edge gets
-    %   the "copy the boundary value" treatment below (i.e. mirror the two
-    %   branches in each case).
+    %   STAGGER CONVENTION (verified against NCOM nest-2 data, 2022082200):
+    %   uface(i,j) sits on the WEST face of cell (i,j), i.e. between
+    %   center(i-1,j) and center(i,j); vface(i,j) sits on the SOUTH face.
+    %   Evidence: u(i)==0 at every sea cell i whose west neighbor i-1 is land
+    %   (the coastline face), but u(i)~=0 at sea cells whose east neighbor is
+    %   land; u(1,:) is 0 everywhere (western domain wall). Same for v in j.
+    %   So center(i) = 0.5*(uface(i) + uface(i+1)).
     %
-    %   Edge treatment: the outermost row/column has no interior neighbor to
-    %   average with, so it's simply copied rather than extrapolated. This
-    %   is a minor approximation only relevant right at the domain edge of
-    %   the NCOM data itself (not your ROMS child boundary), so it should
-    %   have negligible impact as long as your NCOM subgrid extraction window
-    %   (imin/imax/jmin/jmax) doesn't sit exactly on the outermost NCOM edge.
-    
+    %   Edge treatment: the last row/column has no east/north face stored,
+    %   so it's simply copied from its west/south face.
+    %
+    %   Pass RAW face values (land/below-bottom faces = 0 as NCOM stores
+    %   them), not NaN-masked ones -- a NaN on a coastline face would wipe
+    %   out the adjacent wet center. Mask the centers afterwards.
+
         switch dim
             case 1
                 uc = uface;
-                uc(2:end,:,:,:) = 0.5*(uface(1:end-1,:,:,:) + uface(2:end,:,:,:));
-                % uc(1,:,:,:) left as uface(1,:,:,:) -- no interior neighbor
+                uc(1:end-1,:,:,:) = 0.5*(uface(1:end-1,:,:,:) + uface(2:end,:,:,:));
+                % uc(end,:,:,:) left as uface(end,:,:,:) -- no east face stored
             case 2
                 uc = uface;
-                uc(:,2:end,:,:) = 0.5*(uface(:,1:end-1,:,:) + uface(:,2:end,:,:));
-                % uc(:,1,:,:) left as uface(:,1,:,:) -- no interior neighbor
+                uc(:,1:end-1,:,:) = 0.5*(uface(:,1:end-1,:,:) + uface(:,2:end,:,:));
+                % uc(:,end,:,:) left as uface(:,end,:,:) -- no north face stored
             otherwise
                 error('avg_face_to_center:badDim', 'dim must be 1 or 2.');
         end
