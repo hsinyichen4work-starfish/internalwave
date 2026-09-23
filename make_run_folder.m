@@ -23,7 +23,11 @@ grid.LLm=684; grid.MMm=854; grid.N=128; %% 900m grid
 
 walltime = '24:00:00';
 input_filenames.grd = 'roms_grd_900m';
+<<<<<<< HEAD
 input_filenames.ini = 'roms_ini_900m2022082400';
+=======
+input_filenames.ini = 'roms_ini_900m2022082300';
+>>>>>>> 15e5acd (make_modified)
 input_filenames.bry = 'roms_bry_900m';
 input_filenames.dbry = 'roms_dbry_flux_900m';
 input_filenames.frc = 'roms_frc_900m';
