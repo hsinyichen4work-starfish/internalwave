@@ -16,8 +16,6 @@ file_content = strrep(file_content, 'the_b_ex', pad(str, 8));
 str = strrep(upper(sprintf('%.1e', Scoord.hc)), 'E', 'D');
 file_content = strrep(file_content, 'hc_ex', pad(str,5));
 
-projectpath = '/expanse/lustre/projects/uso101/hchen54/';
-
 grid_path = [projectpath,'input/grid_',TAG_USE,'/'];
 bry_path = [projectpath,'input/bry_',TAG_USE,'/'];
 dbry_path = [projectpath,'input/dynbry_',TAG_USE,'/'];
