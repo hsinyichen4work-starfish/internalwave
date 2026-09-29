@@ -35,14 +35,14 @@ addpath(genpath('/home/hsinyi/Documents/CODE/matlab_funtion'), '-end');
 %% ============================================================================
 
 %% ---- user settings ----
-dx = 300;
+dx = 900;
 child_grid_path = '/home/hsinyi/roms_data/grid/';
-child_bry_path  = '/home/hsinyi/roms_data/bry_63/';
-flux_out_path   = '/home/hsinyi/roms_data/bry_dynamic_flux_63/';
+child_bry_path  = '/home/hsinyi/roms_data/bry/';
+flux_out_path   = '/home/hsinyi/roms_data/bry_dynamic_flux/';
 cgrid_name = ['roms_grd_',num2str(dx),'m.nc'];
 
 date_start = "20220822";
-date_end   = "20221125";
+date_end   = "20221130";
 
 cutoff_days = 28/24;   % ~29 hours, per your PI's 28-30 hr suggestion
 N_butter    = 5;

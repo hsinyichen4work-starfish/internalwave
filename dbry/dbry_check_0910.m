@@ -8,11 +8,11 @@ cgrid_name = ['roms_grd_',num2str(dx),'m.nc'];
 dbry_name = ['roms_dbry_flux_',num2str(dx),'m*.nc'];
 dbry_mat_name = ['bryfile_dynamic',num2str(dx),'*.mat'];
 quiver_fod = ['quiver_plot_',num2str(dx),'m'];
-dbry_path = '/home/hsinyi/roms_data/bry_dynamic_flux_63/';
+dbry_path = '/home/hsinyi/roms_data/bry_dynamic_flux/';
 child_grid_path = '/home/hsinyi/roms_data/grid/';
-child_bry_path = '/home/hsinyi/roms_data/bry_63/';
-flux_out_path = '/home/hsinyi/roms_data/bry_dynamic_flux_63/'; 
-figure_path = '/home/hsinyi/figure/20260904dynamic_bry/';
+child_bry_path = '/home/hsinyi/roms_data/bry/';
+flux_out_path = '/home/hsinyi/roms_data/bry_dynamic_flux/'; 
+figure_path = '/home/hsinyi/figure/20260928dynamic_bry/';
 dbry_mat_path = '/home/hsinyi/matlab_file/dbry_saving/';
 nchose = 400;   % along-boundary index for single-point Fx/Fy time series check (see bry_check_timeplot.m)
 %%
@@ -44,7 +44,6 @@ probe = read_nc_fun([child_bry_path,probe_list(1).name]);
 theta_s = probe.theta_s; theta_b = probe.theta_b; hc = probe.hc;
 clear probe
 %%
-%{
 for t = 1 : length(file_list)
     dbry_nc  = read_nc_fun(fullfile(file_list(t).folder, file_list(t).name));
     dbry_mat = load(fullfile(file_mat_list(t).folder, file_mat_list(t).name));
@@ -151,7 +150,6 @@ for t = 1 : length(file_list)
         disp(['save flux_quiver_',datestr(dbry_mat.time(t_idx) + t1,"yyyymmddHH"),'.jpg'])
     end
 end
-%}
 
 %% load & concatenate every daily mat file into one continuous time series
 % per boundary, so figures 2/3 below show the whole ~90 day record in a
@@ -283,17 +281,31 @@ nchose = 400;
 figure(5); clf; hold on
 til5 = tiledlayout(2,2); til5.TileSpacing = 'compact'; til5.Padding = 'compact';
 
-ax(1) = nexttile;
-plot(bry_all.north.along,mean(bry_all.north.Fy,2)); title("north boundary")
-
-ax(2) = nexttile;
-plot(bry_all.south.along,mean(bry_all.south.Fy,2)); title("south boundary")
-
-ax(3) = nexttile;
-plot(bry_all.east.along,mean(bry_all.east.Fy,2)); title("east boundary")
-
-ax(4) = nexttile;
-plot(bry_all.west.along,mean(bry_all.west.Fy,2)); title("west boundary")
+% time mean of signed boundary-normal flux (normal_field defined in figure 3 above)
+ax5 = gobjects(1,length(dirstr));
+for j = 1:length(dirstr)
+    dc = char(dirstr(j));
+    ax5(j) = nexttile;
+    plot(bry_all.(dc).along, mean(bry_all.(dc).(normal_field.(dc)),2));
+    title([dc,' boundary (mean ',normal_field.(dc),')'])
+end
 saveas(gcf,"boundary_flux_time_mean.jpg")
-linkaxes(ax,'y')
+linkaxes(ax5,'y')
 saveas(gcf,"boundary_flux_time_mean2.jpg")
+
+%% figure 6: time mean of flux magnitude sqrt(Fx^2+Fy^2)
+cd(figure_path)
+figure(6); clf; hold on
+til6 = tiledlayout(2,2); til6.TileSpacing = 'compact'; til6.Padding = 'compact';
+
+ax6 = gobjects(1,length(dirstr));
+for j = 1:length(dirstr)
+    dc = char(dirstr(j));
+    ax6(j) = nexttile;
+    Fmag = sqrt(bry_all.(dc).Fx.^2 + bry_all.(dc).Fy.^2);
+    plot(bry_all.(dc).along, mean(Fmag,2));
+    title([dc,' boundary (mean |F|)'])
+end
+saveas(gcf,"boundary_flux_mag_time_mean.jpg")
+linkaxes(ax6,'y')
+saveas(gcf,"boundary_flux_mag_time_mean2.jpg")
