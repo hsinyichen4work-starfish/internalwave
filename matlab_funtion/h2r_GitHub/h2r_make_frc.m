@@ -1,5 +1,5 @@
 function h2r_make_frc(parent_G, parent_FLUX, parent_WIND, parent_PRESS, ...
-    chdgrd, frcname, chd_ang, limits)
+    chdgrd, frcname, chd_ang, limits, parent_TS)
 %--------------------------------------------------------------
 %  Extract surface forcing fields from parent-NCOM files
 %  (heaflx/salflx/solflx, stresu/stresv, slpres) and interpolate
@@ -9,12 +9,33 @@ function h2r_make_frc(parent_G, parent_FLUX, parent_WIND, parent_PRESS, ...
 %  Unlike h2r_make_ini.m / h2r_bry_hv.m, this is a purely 2D
 %  (horizontal-only) interpolation -- no zlevs3/get_hv_coef/A matrix,
 %  since none of these fields have vertical structure.
+%
+%  UNITS: NCOM writes kinematic fluxes, ROMS flux_frc.F expects
+%  physical ones, so they are converted here:
+%    shflux [W/m^2] = (heaflx + solflx) * rho0*Cp
+%                     -- heaflx [K m/s] is the NON-solar part only, but
+%                     ROMS wants the NET flux (it subtracts swrad from it)
+%    swrad  [W/m^2] = solflx * rho0*Cp
+%    swflux [cm/day] = salflx / SSS * 8.64e6
+%                     -- salflx [psu m/s] is already S*(E-P); ROMS
+%                     multiplies swflux by its own surface salinity
+%  parent_TS is the [par_name '_ts.nc'] file (make_bry_need_temp.m), used
+%  only for its surface salinity (layer 1 = surface).
 %--------------------------------------------------------------
 
-if nargin < 7
-    chd_ang = 'rad';
+if nargin < 9
+    error('h2r_make_frc:noTS', ...
+        'parent_TS (the _ts.nc file) is required to convert salflx to cm/day.');
 end
 [ndomx,ndomy] = size(limits);
+
+%% --- Unit conversion constants ---
+% rho0 and Cp must match what ROMS divides by: rho0 in the roms .in file,
+% Cp in scalars.F. That way ROMS recovers exactly NCOM's kinematic flux.
+rho0     = 1027.5;
+Cp       = 3985;
+ms2cmday = 100*86400;      % m/s -> cm/day
+sss_min  = 1;              % psu, floor on SSS to keep salflx/SSS bounded in the river plume
 
 %% --- Child grid ---
 maskc_full = ncread(chdgrd, 'mask_rho')';
@@ -28,6 +49,11 @@ end
 %% --- Time base ---
 MT = ncread(parent_WIND, 'MT');
 nt = length(MT);
+info_ts = ncinfo(parent_TS, 'layer_salinity');
+if info_ts.Size(end) ~= nt
+    error('h2r_make_frc:timeMismatch', ...
+        '%s has %d time steps but the forcing files have %d.', parent_TS, info_ts.Size(end), nt);
+end
 t1 = datenum(1900,12,31,0,0,0);
 t2 = datenum(1994,1,1,0,0,0);
 
@@ -82,11 +108,17 @@ for domx = 1:ndomx
             disp(['    time step ' num2str(tind) ' of ' num2str(nt)]);
 
             %% --- Scalar fields: heaflx/salflx/solflx/slpres -> shflux/swflux/swrad/Pair ---
-            scalars_in  = {'heaflx','salflx','solflx'};
+            hea = double(ncread(parent_FLUX, 'heaflx', [imin jmin tind], [li lj 1]))';
+            sal = double(ncread(parent_FLUX, 'salflx', [imin jmin tind], [li lj 1]))';
+            sol = double(ncread(parent_FLUX, 'solflx', [imin jmin tind], [li lj 1]))';
+            sss = double(ncread(parent_TS, 'layer_salinity', [imin jmin 1 tind], [li lj 1 1]))';
+
+            % NCOM kinematic units -> ROMS units, see UNITS note in the header
+            scalars_in  = {(hea + sol)*rho0*Cp, sal./max(sss,sss_min)*ms2cmday, sol*rho0*Cp};
             scalars_out = {'shflux','swflux','swrad'};
 
             for k = 1:numel(scalars_in)
-                var = double(ncread(parent_FLUX, scalars_in{k}, [imin jmin tind], [li lj 1]))';
+                var = scalars_in{k};
                 var = fillmask(var,1,masks,nnel);
                 varc = sum(coef2d.*var(elem2d), 3);
                 varc = varc.*maskc;

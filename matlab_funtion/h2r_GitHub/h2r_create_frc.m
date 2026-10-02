@@ -6,7 +6,7 @@ function h2r_create_frc(frcname,grdname)
     %   Creates an empty ROMS surface forcing NetCDF file (flux
     %   forcing, not bulk formula) with:
     %       sustr, svstr    - wind stress (u/v points)
-    %       shflux          - net surface heat flux, non-solar (rho points)
+    %       shflux          - net surface heat flux, solar included (rho points)
     %       swflux          - surface salt/freshwater flux (rho points)
     %       swrad           - shortwave radiation (rho points)
     %       Pair            - sea level pressure (rho points, optional)

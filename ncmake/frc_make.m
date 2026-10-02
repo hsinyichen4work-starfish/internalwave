@@ -43,6 +43,8 @@ for folder_num = 1 : length(fod)
         parent_WIND = [forcing_file_read, pariniw];
         parent_PRESS  = [forcing_file_read, parinip];
         parent_G  = [forcing_file_read, par_grd];
+        % surface salinity for the salflx -> cm/day conversion; same folder bry_make.m writes to
+        parent_TS = ['/home/hsinyi/roms_data/bry/bry_read_nc/', par_name, '_ts.nc'];
         chdgrd = [child_grid_path, chd_grd_name];
         chd_ang   = 'rad';
 
@@ -52,6 +54,6 @@ for folder_num = 1 : length(fod)
 
         % Then per date/par_name:
         h2r_make_frc(parent_G, parent_FLUX, parent_WIND, parent_PRESS, ...
-                chdgrd, frcname, chd_ang, limits);
+                chdgrd, frcname, chd_ang, limits, parent_TS);
     end
 end

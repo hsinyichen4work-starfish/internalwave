@@ -19,7 +19,7 @@ names = strcat(names, '_mor');
 lons  = [-45.13, mooring_lon(:)', cpies_lon(:)'];
 lats  = [  3.95, mooring_lat(:)', cpies_lat(:)'];
 
-period =  600;
+period =  360;
 mooring_vars = 'zeta, temp, salt, u, v' ;
 %% -- END USER INPUT ------------
 

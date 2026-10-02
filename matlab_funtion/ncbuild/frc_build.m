@@ -15,6 +15,7 @@ parent_FLUX = [nc_path_frc, parinis];
 parent_WIND = [nc_path_frc, pariniw];
 parent_PRESS  = [nc_path_frc, parinip];
 parent_G  = [nc_path_frc, par_grd];
+parent_TS = [nc_path_ini_bry, par_name, '_ts.nc'];   % surface salinity, for the salflx -> cm/day conversion
 
 % Once, regardless of how many dates/time steps you process:
 chdgrd     = [grid_path,grd_name,'.nc'];
@@ -22,5 +23,5 @@ limits = h2r_frc_subgrid(parent_G, chdgrd, ndomx, ndomy);
 
 % Then per date/par_name:
 h2r_make_frc(parent_G, parent_FLUX, parent_WIND, parent_PRESS, ...
-        chdgrd, frcname, chd_ang, limits);
+        chdgrd, frcname, chd_ang, limits, parent_TS);
 
